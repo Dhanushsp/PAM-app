@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Pressable } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 export default function CustomerSalesModal({ customer, onClose, onEditSale, onRefresh }) {
@@ -56,7 +56,7 @@ export default function CustomerSalesModal({ customer, onClose, onEditSale, onRe
                   className="flex-row items-center mt-2"
                 >
                   <Text className="text-blue-600 text-sm font-semibold mr-1">Edit</Text>
-                  <Icon name="edit" size={14} color="#2563EB" /> {/* blue-600 */}
+                  <FontAwesome name="edit" size={14} color="#2563EB" /> {/* blue-600 */}
                 </TouchableOpacity>
               </View>
             ))
