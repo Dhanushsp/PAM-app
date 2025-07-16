@@ -178,7 +178,7 @@ export default function Home({ token, onLogout }: HomeProps) {
             onPress={() => setIsSideNavOpen(true)}
             className="mr-3 p-2 rounded-lg bg-gray-100"
           >
-            <Text className="text-xl">☰</Text>
+            <Text className="text-xl text-black">☰</Text>
           </TouchableOpacity>
           <Text className="text-2xl font-bold text-gray-700">
             <Text>PAM</Text><Text className="text-blue-600">-Accounts</Text>
@@ -194,10 +194,11 @@ export default function Home({ token, onLogout }: HomeProps) {
 
       {/* Search */}
       <TextInput
-        className="bg-white border border-gray-300 rounded-lg px-3 py-2 mb-3"
+        className="border border-gray-300 rounded px-3 py-2 text-black bg-white mb-3"
         placeholder="🔍 Search by customer name"
         value={search}
         onChangeText={setSearch}
+        placeholderTextColor="#888"
       />
 
       {/* Sort buttons */}

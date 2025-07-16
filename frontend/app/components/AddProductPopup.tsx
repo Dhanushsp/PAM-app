@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Pressable } from 'react-native';
 import axios from 'axios';
 
-
 export default function AddProductPopup({ token, onClose }) {
   const [form, setForm] = useState({
     productName: '',
@@ -53,42 +52,43 @@ export default function AddProductPopup({ token, onClose }) {
   };
 
   return (
-    <View className="absolute inset-0 bg-black/60 items-center justify-center z-50">
-              <View className="bg-white p-4 rounded-2xl w-11/12 max-w-sm relative">
+    <View className="flex-1 justify-center items-center bg-black/50 absolute inset-0 z-50">
+      <View className="bg-white p-5 rounded-lg w-4/5 relative">
         {/* Close button */}
         <Pressable onPress={onClose} className="absolute top-2 right-3">
           <Text className="text-gray-400 text-2xl font-bold">&times;</Text>
         </Pressable>
-
         <Text className="text-xl mb-4 font-bold text-blue-700 text-center">Add Product</Text>
-
         <TextInput
           placeholder="Product Name"
           value={form.productName}
           onChangeText={(text) => handleChange('productName', text)}
-          className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-800"
+          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Price per Pack"
           value={form.pricePerPack}
           onChangeText={(text) => handleChange('pricePerPack', text)}
           keyboardType="numeric"
-          className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-800"
+          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Kgs per Pack"
           value={form.kgsPerPack}
           onChangeText={(text) => handleChange('kgsPerPack', text)}
           keyboardType="numeric"
-          className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-800"
+          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
+          placeholderTextColor="#888"
         />
         <TextInput
           placeholder="Price per Kg"
           value={form.pricePerKg}
           editable={false}
-          className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-200 bg-gray-100 text-gray-500"
+          className="mb-3 px-4 py-2 rounded border border-gray-200 bg-gray-100 text-gray-500"
+          placeholderTextColor="#888"
         />
-
         <TouchableOpacity
           onPress={handleSubmit}
           className="w-full bg-blue-600 py-2 rounded-lg mt-2 active:scale-95"
