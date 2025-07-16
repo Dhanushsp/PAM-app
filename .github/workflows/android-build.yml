@@ -33,7 +33,7 @@ jobs:
           npm ci
 
       - name: Make gradlew executable (only if exists)
-        working-directory: ./frontend/MyApp
+        working-directory: ./frontend
         run: |
           if [ -f android/gradlew ]; then
             chmod +x android/gradlew
@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Clean Android build (only if gradlew exists)
-        working-directory: ./frontend/MyApp
+        working-directory: ./frontend
         run: |
           if [ -f android/gradlew ]; then
             cd android
@@ -52,7 +52,7 @@ jobs:
           fi
 
       - name: Build Release APK (only if gradlew exists)
-        working-directory: ./frontend/MyApp
+        working-directory: ./frontend
         run: |
           if [ -f android/gradlew ]; then
             cd android
@@ -65,4 +65,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: frontend/MyApp/android/app/build/outputs/apk/release/app-release.apk
+          path: frontend/android/app/build/outputs/apk/release/app-release.apk
