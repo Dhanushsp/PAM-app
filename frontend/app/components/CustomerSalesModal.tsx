@@ -2,8 +2,38 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
+interface Product {
+  _id: string;
+  productName: string;
+  quantity: number;
+  price: number;
+}
 
-export default function CustomerSalesModal({ customer, onClose, onEditSale, onRefresh }) {
+interface Sale {
+  _id: string;
+  date: string;
+  saleType?: string;
+  products: Product[];
+  totalPrice: number;
+  amountReceived: number;
+  paymentMethod: string;
+}
+
+interface Customer {
+  _id: string;
+  name: string;
+  credit: number;
+  sales?: Sale[];
+}
+
+interface CustomerSalesModalProps {
+  customer: Customer;
+  onClose: () => void;
+  onEditSale: (sale: Sale) => void;
+  onRefresh?: () => void;
+}
+
+export default function CustomerSalesModal({ customer, onClose, onEditSale, onRefresh }: CustomerSalesModalProps) {
   if (!customer) return null;
 
   return (
@@ -27,8 +57,8 @@ export default function CustomerSalesModal({ customer, onClose, onEditSale, onRe
 
         {customer.sales && customer.sales.length > 0 ? (
           customer.sales
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .map((sale) => (
+            .sort((a: Sale, b: Sale) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((sale: Sale) => (
               <View key={sale._id} className="border-b pb-2 mb-2">
                 <Text className="text-xs text-gray-500">
                   {sale.date
@@ -42,7 +72,7 @@ export default function CustomerSalesModal({ customer, onClose, onEditSale, onRe
                     : 'Date not available'} - {sale.saleType?.toUpperCase()}
                 </Text>
                 <View className="mt-1">
-                  {sale.products.map((product) => (
+                  {sale.products.map((product: Product) => (
                     <Text key={product._id} className="text-sm text-gray-700">
                       • {product.productName} - Qty: {product.quantity}, Price: ₹{product.price}
                     </Text>
@@ -56,7 +86,7 @@ export default function CustomerSalesModal({ customer, onClose, onEditSale, onRe
                   className="flex-row items-center mt-2"
                 >
                   <Text className="text-blue-600 text-sm font-semibold mr-1">Edit</Text>
-                  <FontAwesome name="edit" size={14} color="#2563EB" /> {/* blue-600 */}
+                  <FontAwesome name="edit" size={14} color="#2563EB" />
                 </TouchableOpacity>
               </View>
             ))
