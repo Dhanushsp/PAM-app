@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, Pressable } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
 
@@ -157,144 +158,152 @@ export default function AddSale({ onClose, onSaleAdded, onSetSortToRecent, token
   }, [selectedCustomer, totalPrice, amountReceived]);
 
   return (
-    <View className="flex-1 justify-center items-center bg-black/50 absolute inset-0 z-50">
-      <ScrollView className="bg-white p-5 rounded-lg w-4/5 max-h-[90vh]" contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className="text-lg font-bold text-blue-700">Add Sale</Text>
-          <Pressable onPress={onClose}><Text className="text-gray-400 text-2xl font-bold">&times;</Text></Pressable>
-        </View>
-        <TextInput
-          placeholder="Search Customer"
-          value={customerName}
-          onChangeText={setCustomerName}
-          className="border border-gray-300 rounded px-3 py-2 text-black bg-white mb-2"
-          placeholderTextColor="#888"
-        />
-        {filteredCustomers.length > 0 && (
-          <View className="bg-white border rounded max-h-40 mb-2">
-            <ScrollView>
-              {filteredCustomers.map(c => (
-                <Pressable
-                  key={c._id}
-                  onPress={() => { setSelectedCustomer(c); setCustomerName(c.name); setCurrentCredit(Number(c.credit)); }}
-                  className="px-3 py-2 hover:bg-blue-50"
-                >
-                  <Text>{c.name}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-        {selectedCustomer && (
-          <>
-            <Text className="text-sm text-gray-600">Current Credit: ₹{currentCredit.toFixed(2)}</Text>
-            <Text className="text-sm">Sale Date</Text>
-            <TextInput
-              value={saleDate}
-              onChangeText={setSaleDate}
-              placeholder="YYYY-MM-DD"
-              className="border border-gray-300 rounded px-3 py-2 text-black bg-white mb-2"
-              placeholderTextColor="#888"
-            />
-            <Text className="text-sm">Sale Type</Text>
-            <View className="border border-gray-300 rounded mb-2">
-              <ScrollView horizontal>
-                <Pressable
-                  onPress={() => setSaleType('kg')}
-                  className={`px-3 py-2 ${saleType === 'kg' ? 'bg-blue-100' : ''}`}
-                >
-                  <Text className={saleType === 'kg' ? 'font-semibold' : ''}>KG</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setSaleType('pack')}
-                  className={`px-3 py-2 ${saleType === 'pack' ? 'bg-blue-100' : ''}`}
-                >
-                  <Text className={saleType === 'pack' ? 'font-semibold' : ''}>Pack</Text>
-                </Pressable>
-              </ScrollView>
-            </View>
-            <Text className="text-sm">Products</Text>
-            <View className="border border-gray-300 rounded max-h-40 mb-2">
+    <View className="flex-1 justify-center items-center bg-black/40 absolute inset-0 z-50">
+      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg p-0 overflow-hidden relative max-h-[95vh]">
+        {/* Floating Close Button */}
+        <Pressable
+          onPress={onClose}
+          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2 shadow"
+          style={{ elevation: 3 }}
+        >
+          <MaterialIcons name="close" size={22} color="#64748b" />
+        </Pressable>
+        {/* Title */}
+        <Text className="text-lg font-bold text-blue-700 text-center pt-7 pb-2">Add Sale</Text>
+        <ScrollView className="px-6 pb-6 pt-2" style={{ maxHeight: '80vh' }} contentContainerStyle={{ flexGrow: 1 }}>
+          <TextInput
+            placeholder="Search Customer"
+            value={customerName}
+            onChangeText={setCustomerName}
+            className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+            placeholderTextColor="#888"
+          />
+          {filteredCustomers.length > 0 && (
+            <View className="bg-white border border-gray-200 rounded-xl max-h-40 mb-4">
               <ScrollView>
-                {products.map(product => (
+                {filteredCustomers.map(c => (
                   <Pressable
-                    key={product._id}
-                    onPress={() => {
-                      const isSelected = selectedProducts.includes(product._id);
-                      if (isSelected) {
-                        setSelectedProducts(prev => prev.filter(id => id !== product._id));
-                      } else {
-                        setSelectedProducts(prev => [...prev, product._id]);
-                      }
-                    }}
-                    className={`px-3 py-2 ${selectedProducts.includes(product._id) ? 'bg-blue-100' : ''}`}
+                    key={c._id}
+                    onPress={() => { setSelectedCustomer(c); setCustomerName(c.name); setCurrentCredit(Number(c.credit)); }}
+                    className="px-4 py-2 rounded-xl hover:bg-blue-50"
                   >
-                    <Text className={selectedProducts.includes(product._id) ? 'font-semibold' : ''}>
-                      {product.productName}
-                    </Text>
+                    <Text>{c.name}</Text>
                   </Pressable>
                 ))}
               </ScrollView>
             </View>
-            {productDetails.map((item, idx) => (
-              <View key={item.productId} className="bg-gray-50 rounded p-2 space-y-2 mb-2">
-                <Text className="font-medium">{item.productName}</Text>
-                <TextInput
-                  value={item.quantity.toString()}
-                  onChangeText={v => handleQuantityChange(idx, v)}
-                  placeholder="Quantity"
-                  keyboardType="numeric"
-                  className="border border-gray-300 rounded px-3 py-2 text-black bg-white mb-1"
-                  placeholderTextColor="#888"
-                />
-                <TextInput
-                  value={item.price.toString()}
-                  onChangeText={v => handlePriceChange(idx, v)}
-                  placeholder="Price"
-                  keyboardType="numeric"
-                  className="border border-gray-300 rounded px-3 py-2 text-black bg-white"
-                  placeholderTextColor="#888"
-                />
+          )}
+          {selectedCustomer && (
+            <>
+              <Text className="text-sm text-gray-600 mb-2">Current Credit: ₹{currentCredit.toFixed(2)}</Text>
+              <Text className="text-sm mb-1">Sale Date</Text>
+              <TextInput
+                value={saleDate}
+                onChangeText={setSaleDate}
+                placeholder="YYYY-MM-DD"
+                className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+                placeholderTextColor="#888"
+              />
+              <Text className="text-sm mb-1">Sale Type</Text>
+              <View className="flex-row mb-4 gap-2">
+                <Pressable
+                  onPress={() => setSaleType('kg')}
+                  className={`px-4 py-2 rounded-full border ${saleType === 'kg' ? 'bg-blue-100 border-blue-400' : 'bg-gray-100 border-gray-200'}`}
+                >
+                  <Text className={saleType === 'kg' ? 'font-semibold text-blue-700' : 'text-gray-700'}>KG</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setSaleType('pack')}
+                  className={`px-4 py-2 rounded-full border ${saleType === 'pack' ? 'bg-blue-100 border-blue-400' : 'bg-gray-100 border-gray-200'}`}
+                >
+                  <Text className={saleType === 'pack' ? 'font-semibold text-blue-700' : 'text-gray-700'}>Pack</Text>
+                </Pressable>
               </View>
-            ))}
-            <Text className="font-semibold">Total Price: ₹{totalPrice.toFixed(2)}</Text>
-            <TextInput
-              value={amountReceived.toString()}
-              onChangeText={v => setAmountReceived(parseFloat(v) || 0)}
-              placeholder="Amount Received"
-              keyboardType="numeric"
-              className="border border-gray-300 rounded px-3 py-2 text-black bg-white mb-2"
-              placeholderTextColor="#888"
-            />
-            <Text className="text-sm text-gray-600 mb-2">Updated Credit: ₹{updatedCredit.toFixed(2)}</Text>
-            <Text className="text-sm">Payment Method</Text>
-            <View className="flex-row mb-2">
-              <Pressable
-                onPress={() => setPaymentMethod('cash')}
-                className={`px-3 py-2 rounded-l ${paymentMethod === 'cash' ? 'bg-blue-100' : 'bg-gray-100'}`}
+              <Text className="text-sm mb-1">Products</Text>
+              <View className="border border-gray-200 rounded-xl max-h-40 mb-4 bg-gray-50">
+                <ScrollView>
+                  {products.map(product => (
+                    <Pressable
+                      key={product._id}
+                      onPress={() => {
+                        const isSelected = selectedProducts.includes(product._id);
+                        if (isSelected) {
+                          setSelectedProducts(prev => prev.filter(id => id !== product._id));
+                        } else {
+                          setSelectedProducts(prev => [...prev, product._id]);
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-xl mb-1 ${selectedProducts.includes(product._id) ? 'bg-blue-100' : ''}`}
+                    >
+                      <Text className={selectedProducts.includes(product._id) ? 'font-semibold text-blue-700' : 'text-gray-700'}>
+                        {product.productName}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+              {productDetails.map((item, idx) => (
+                <View key={item.productId} className="bg-white rounded-2xl border border-gray-100 p-3 mb-3 shadow-sm">
+                  <Text className="font-medium mb-2 text-blue-700">{item.productName}</Text>
+                  <View className="flex-row gap-2 mb-2">
+                    <TextInput
+                      value={item.quantity.toString()}
+                      onChangeText={v => handleQuantityChange(idx, v)}
+                      placeholder="Quantity"
+                      keyboardType="numeric"
+                      className="flex-1 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+                      placeholderTextColor="#888"
+                    />
+                    <TextInput
+                      value={item.price.toString()}
+                      onChangeText={v => handlePriceChange(idx, v)}
+                      placeholder="Price"
+                      keyboardType="numeric"
+                      className="flex-1 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+                      placeholderTextColor="#888"
+                    />
+                  </View>
+                </View>
+              ))}
+              <Text className="font-semibold text-lg text-center mb-2">Total Price: ₹{totalPrice.toFixed(2)}</Text>
+              <TextInput
+                value={amountReceived.toString()}
+                onChangeText={v => setAmountReceived(parseFloat(v) || 0)}
+                placeholder="Amount Received"
+                keyboardType="numeric"
+                className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+                placeholderTextColor="#888"
+              />
+              <Text className="text-sm text-gray-600 mb-2 text-center">Updated Credit: ₹{updatedCredit.toFixed(2)}</Text>
+              <Text className="text-sm mb-1">Payment Method</Text>
+              <View className="flex-row gap-2 mb-4">
+                <Pressable
+                  onPress={() => setPaymentMethod('cash')}
+                  className={`flex-1 px-4 py-2 rounded-full border ${paymentMethod === 'cash' ? 'bg-green-100 border-green-400' : 'bg-gray-100 border-gray-200'}`}
+                >
+                  <Text className={paymentMethod === 'cash' ? 'font-semibold text-green-700' : 'text-gray-700'}>Cash</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setPaymentMethod('online')}
+                  className={`flex-1 px-4 py-2 rounded-full border ${paymentMethod === 'online' ? 'bg-green-100 border-green-400' : 'bg-gray-100 border-gray-200'}`}
+                >
+                  <Text className={paymentMethod === 'online' ? 'font-semibold text-green-700' : 'text-gray-700'}>Online</Text>
+                </Pressable>
+              </View>
+              {error ? <Text className="text-red-500 mb-2 text-center">{error}</Text> : null}
+              <TouchableOpacity
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 py-3 rounded-xl mt-2 active:scale-95 shadow-sm"
               >
-                <Text className={paymentMethod === 'cash' ? 'font-semibold' : ''}>Cash</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setPaymentMethod('online')}
-                className={`px-3 py-2 rounded-r ${paymentMethod === 'online' ? 'bg-blue-100' : 'bg-gray-100'}`}
-              >
-                <Text className={paymentMethod === 'online' ? 'font-semibold' : ''}>Online</Text>
-              </Pressable>
-            </View>
-            {error ? <Text className="text-red-500 mb-2">{error}</Text> : null}
-            <TouchableOpacity
-              onPress={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full bg-green-600 py-2 rounded-lg mt-2 active:scale-95"
-            >
-              <Text className="text-white text-center font-semibold">
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </ScrollView>
+                <Text className="text-white text-center font-semibold text-base">
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </ScrollView>
+      </View>
     </View>
   );
 }

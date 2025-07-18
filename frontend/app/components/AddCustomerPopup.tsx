@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, Pressable } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
-export default function AddCustomerPopup({ token, onClose, onCustomerAdded }) {
+interface AddCustomerPopupProps {
+  token: string;
+  onClose: () => void;
+  onCustomerAdded: () => void;
+}
+
+export default function AddCustomerPopup({ token, onClose, onCustomerAdded }: AddCustomerPopupProps) {
   const [form, setForm] = useState({
     name: '',
     contact: '',
@@ -10,7 +17,7 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }) {
     joinDate: new Date().toISOString().split('T')[0],
   });
 
-  const handleChange = (key, value) => {
+  const handleChange = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -31,7 +38,7 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }) {
       alert(res.data.message || 'Customer added!');
       onCustomerAdded();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error adding customer:', err);
       if (err.response?.status === 403) {
         alert('Authentication failed. Please login again.');
@@ -42,48 +49,55 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }) {
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-black/50 absolute inset-0 z-50">
-      <View className="bg-white p-5 rounded-lg w-4/5 relative">
-        {/* Close button */}
-        <Pressable onPress={onClose} className="absolute top-2 right-3">
-          <Text className="text-gray-400 text-2xl font-bold">&times;</Text>
-        </Pressable>
-        <Text className="text-xl mb-4 font-bold text-blue-700 text-center">Add Customer</Text>
-        <TextInput
-          placeholder="Name"
-          value={form.name}
-          onChangeText={(text) => handleChange('name', text)}
-          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
-          placeholderTextColor="#888"
-        />
-        <TextInput
-          placeholder="Contact"
-          value={form.contact}
-          onChangeText={(text) => handleChange('contact', text)}
-          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
-          placeholderTextColor="#888"
-        />
-        <TextInput
-          placeholder="Credit Amount"
-          value={form.credit}
-          onChangeText={(text) => handleChange('credit', text)}
-          keyboardType="numeric"
-          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
-          placeholderTextColor="#888"
-        />
-        <TextInput
-          placeholder="Join Date"
-          value={form.joinDate}
-          onChangeText={(text) => handleChange('joinDate', text)}
-          className="mb-3 px-4 py-2 rounded border border-gray-300 bg-white text-black"
-          placeholderTextColor="#888"
-        />
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="w-full bg-blue-600 py-2 rounded-lg mt-2 active:scale-95"
+    <View className="flex-1 justify-center items-center bg-black/40 absolute inset-0 z-50">
+      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg p-0 overflow-hidden relative">
+        {/* Floating Close Button */}
+        <Pressable
+          onPress={onClose}
+          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2 shadow"
+          style={{ elevation: 3 }}
         >
-          <Text className="text-white text-center font-semibold">Submit</Text>
-        </TouchableOpacity>
+          <MaterialIcons name="close" size={22} color="#64748b" />
+        </Pressable>
+        {/* Title */}
+        <Text className="text-lg font-bold text-blue-700 text-center pt-7 pb-2">Add Customer</Text>
+        <View className="px-6 pb-6 pt-2">
+          <TextInput
+            placeholder="Name"
+            value={form.name}
+            onChangeText={(text) => handleChange('name', text)}
+            className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+            placeholderTextColor="#888"
+          />
+          <TextInput
+            placeholder="Contact"
+            value={form.contact}
+            onChangeText={(text) => handleChange('contact', text)}
+            className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+            placeholderTextColor="#888"
+          />
+          <TextInput
+            placeholder="Credit Amount"
+            value={form.credit}
+            onChangeText={(text) => handleChange('credit', text)}
+            keyboardType="numeric"
+            className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+            placeholderTextColor="#888"
+          />
+          <TextInput
+            placeholder="Join Date"
+            value={form.joinDate}
+            onChangeText={(text) => handleChange('joinDate', text)}
+            className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity
+            onPress={handleSubmit}
+            className="w-full bg-blue-600 py-3 rounded-xl mt-2 active:scale-95 shadow-sm"
+          >
+            <Text className="text-white text-center font-semibold text-base">Submit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Home from './pages/Home'
+import Home from './pages/Home';
 import Login from './pages/Login';
 
 export default function App() {
