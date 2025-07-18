@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Pressable } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
@@ -17,24 +17,17 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }: Ad
     joinDate: new Date().toISOString().split('T')[0],
   });
 
-  const handleChange = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
   const BACKEND_URL = process.env.API_BASE_URL || 'https://api.pamacc.dhanushdev.in';
+
+  const handleChange = (key: string, value: string) => {
+    setForm(prev => ({ ...prev, [key]: value }));
+  };
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(
-        `${BACKEND_URL}/api/customers`,
-        form,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token,
-          },
-        }
-      );
+      const res = await axios.post(`${BACKEND_URL}/api/customers`, form, {
+        headers: { 'Content-Type': 'application/json', Authorization: token }
+      });
       alert(res.data.message || 'Customer added!');
       onCustomerAdded();
       onClose();
@@ -49,12 +42,12 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }: Ad
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-black/40 absolute inset-0 z-50">
-      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg p-0 overflow-hidden relative">
-        {/* Floating Close Button */}
+    <View className="absolute inset-0 z-50 flex-1 justify-center items-center bg-black/40">
+      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg overflow-hidden relative">
+        {/* Close */}
         <Pressable
           onPress={onClose}
-          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2 shadow"
+          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2"
           style={{ elevation: 3 }}
         >
           <MaterialIcons name="close" size={22} color="#64748b" />
@@ -65,21 +58,21 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }: Ad
           <TextInput
             placeholder="Name"
             value={form.name}
-            onChangeText={(text) => handleChange('name', text)}
+            onChangeText={v => handleChange('name', v)}
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
           />
           <TextInput
             placeholder="Contact"
             value={form.contact}
-            onChangeText={(text) => handleChange('contact', text)}
+            onChangeText={v => handleChange('contact', v)}
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
           />
           <TextInput
             placeholder="Credit Amount"
             value={form.credit}
-            onChangeText={(text) => handleChange('credit', text)}
+            onChangeText={v => handleChange('credit', v)}
             keyboardType="numeric"
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
@@ -87,7 +80,7 @@ export default function AddCustomerPopup({ token, onClose, onCustomerAdded }: Ad
           <TextInput
             placeholder="Join Date"
             value={form.joinDate}
-            onChangeText={(text) => handleChange('joinDate', text)}
+            onChangeText={v => handleChange('joinDate', v)}
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
           />

@@ -16,40 +16,25 @@ export default function AddProductPopup({ token, onClose }: AddProductPopupProps
     pricePerKg: ''
   });
 
+  const BACKEND_URL = process.env.API_BASE_URL || 'https://api.pamacc.dhanushdev.in';
+
   useEffect(() => {
     const { pricePerPack, kgsPerPack } = form;
-    if (
-      pricePerPack &&
-      kgsPerPack &&
-      !isNaN(Number(pricePerPack)) &&
-      !isNaN(Number(kgsPerPack))
-    ) {
+    if (pricePerPack && kgsPerPack && !isNaN(+pricePerPack) && !isNaN(+kgsPerPack)) {
       const perKg = parseFloat(pricePerPack) / parseFloat(kgsPerPack);
-      setForm((prev) => ({
-        ...prev,
-        pricePerKg: perKg.toFixed(2)
-      }));
+      setForm(prev => ({ ...prev, pricePerKg: perKg.toFixed(2) }));
     }
   }, [form.pricePerPack, form.kgsPerPack]);
 
   const handleChange = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm(prev => ({ ...prev, [key]: value }));
   };
-
-  const BACKEND_URL = process.env.API_BASE_URL || 'https://api.pamacc.dhanushdev.in';
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(
-        `${BACKEND_URL}/api/addproducts`,
-        form,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token
-          }
-        }
-      );
+      const res = await axios.post(`${BACKEND_URL}/api/addproducts`, form, {
+        headers: { 'Content-Type': 'application/json', Authorization: token }
+      });
       alert(res.data.message || "Product added!");
       onClose();
     } catch (err: any) {
@@ -63,12 +48,12 @@ export default function AddProductPopup({ token, onClose }: AddProductPopupProps
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-black/40 absolute inset-0 z-50">
-      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg p-0 overflow-hidden relative">
-        {/* Floating Close Button */}
+    <View className="absolute inset-0 z-50 flex-1 justify-center items-center bg-black/40">
+      <View className="bg-white w-11/12 max-w-xl rounded-3xl shadow-lg overflow-hidden relative">
+        {/* Close */}
         <Pressable
           onPress={onClose}
-          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2 shadow"
+          className="absolute top-3 right-3 z-10 bg-gray-100 rounded-full p-2"
           style={{ elevation: 3 }}
         >
           <MaterialIcons name="close" size={22} color="#64748b" />
@@ -79,14 +64,14 @@ export default function AddProductPopup({ token, onClose }: AddProductPopupProps
           <TextInput
             placeholder="Product Name"
             value={form.productName}
-            onChangeText={(text) => handleChange('productName', text)}
+            onChangeText={v => handleChange('productName', v)}
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
           />
           <TextInput
             placeholder="Price per Pack"
             value={form.pricePerPack}
-            onChangeText={(text) => handleChange('pricePerPack', text)}
+            onChangeText={v => handleChange('pricePerPack', v)}
             keyboardType="numeric"
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
@@ -94,7 +79,7 @@ export default function AddProductPopup({ token, onClose }: AddProductPopupProps
           <TextInput
             placeholder="Kgs per Pack"
             value={form.kgsPerPack}
-            onChangeText={(text) => handleChange('kgsPerPack', text)}
+            onChangeText={v => handleChange('kgsPerPack', v)}
             keyboardType="numeric"
             className="mb-4 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-black text-base"
             placeholderTextColor="#888"
